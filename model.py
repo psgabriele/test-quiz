@@ -1,6 +1,5 @@
 import uuid
             
-
 class Choice:
 
     """A choice for a question."""
