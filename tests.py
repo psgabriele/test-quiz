@@ -133,3 +133,39 @@ def test_correct_selected_choices_exceed_maximum_selections():
 
     with pytest.raises(Exception, match='Cannot select more than 2 choices'):
         question.correct_selected_choices([1, 2, 3])
+
+
+@pytest.fixture
+def question_with_multiple_choices():
+    question = Question(title='What is 2 + 2?', max_selections=2)
+
+    question.add_choice('3')
+    question.add_choice('4', is_correct=True)
+    question.add_choice('5')
+    question.add_choice('6', is_correct=True)
+
+    return question
+
+
+def test_question_with_multiple_choices_has_four_choices(question_with_multiple_choices):
+    question = question_with_multiple_choices
+
+    assert len(question.choices) == 4
+    assert question.choices[1].text == '4'
+    assert question.choices[3].text == '6'
+
+
+def test_question_corrects_multiple_selected_choices(question_with_multiple_choices):
+    question = question_with_multiple_choices
+
+    result = question.correct_selected_choices([2, 4])
+
+    assert result == [2, 4]
+
+
+def test_question_identifies_only_correct_selected_choices(question_with_multiple_choices):
+    question = question_with_multiple_choices
+
+    result = question.correct_selected_choices([1, 2])
+
+    assert result == [2]
